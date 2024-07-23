@@ -1,0 +1,116 @@
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="stopwatch">
+    <div id="display">00:00:00.000</div>
+    <button id="startStop" onclick="startStop()">Start</button>
+    <button id="reset" onclick="reset()">Reset</button>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
+
+SCRIPT.js
+let startTime;
+let elapsedTime = 0;
+let timerInterval;
+
+function startStop() {
+    if (!timerInterval) {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTime, 10);
+        document.getElementById("startStop").textContent = "Pause";
+    } else {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        document.getElementById("startStop").textContent = "Resume";
+    }
+}
+
+function reset() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    elapsedTime = 0;
+    document.getElementById("display").textContent = "00:00:00.000";
+    document.getElementById("startStop").textContent = "Start";
+}
+
+function updateTime() {
+    const currentTime = Date.now();
+    elapsedTime = currentTime - startTime;
+    displayTime(elapsedTime);
+}
+
+function displayTime(milliseconds) {
+    const hours = Math.floor(milliseconds / 3600000);
+    milliseconds = milliseconds % 3600000;
+    const minutes = Math.floor(milliseconds / 60000);
+    milliseconds = milliseconds % 60000;
+    const seconds = Math.floor(milliseconds / 1000);
+    milliseconds = milliseconds % 1000;
+
+    const displayString = 
+        pad(hours, 2) + ":" +
+        pad(minutes, 2) + ":" +
+        pad(seconds, 2) + "." +
+        pad(milliseconds, 3);
+    
+    document.getElementById("display").textContent = displayString;
+}
+
+function pad(number, length) {
+    let str = '' + number;
+    while (str.length < length) {
+        str = '0' + str;
+    }
+    return str;
+}
+
+STYLE.css
+
+ {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+.stopwatch {
+    text-align: center;
+}
+
+#display {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+button {
+    font-size: 1em;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:active {
+    transform: translateY(1px);
+}
